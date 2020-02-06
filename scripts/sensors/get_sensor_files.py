@@ -1,10 +1,10 @@
 """
-Given a file sufix of the sensor, this script goes to http://archive.luftdaten.info/
+Given a file sufix of the sensors, this script goes to http://archive.luftdaten.info/
 and fetches all the files with that sufix since 01-01-2016 and dumps them in a directory.
 
-Usage: python get_sensor_files.py _sds011_sensor_34801.csv
+Usage: python get_sensor_files.py _sds011_sensor_34801.csv _sds011_sensor_123.csv
 
-output: a directory with all the files in the archivce since @FIRST_SENSOR_DATE
+output: directories with all the files in the archivce since @FIRST_SENSOR_DATE for each sensor
 """
 import datetime
 import os
@@ -56,7 +56,6 @@ def download_files(sensor_suffix):
         if failed_requests > 3:
             break # there are probably no more files for previous dates
 
-
         current_date = current_date - datetime.timedelta(days=1)
 
     print("Got {} files for sensor {}".format(file_count, sensor_suffix))
@@ -64,6 +63,9 @@ def download_files(sensor_suffix):
 
 
 if __name__ == "__main__":
-    suffix = sys.argv[1]
+    suffixes = sys.argv[1:]
 
-    download_files(suffix)
+    print("Sensors: {}".format(suffixes))
+
+    for suffix in suffixes:
+        files_dir_path = download_files(suffix)

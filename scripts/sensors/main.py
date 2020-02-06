@@ -1,5 +1,5 @@
 """
-Usage:  python main.py <region-name> _sds011_sensor_34801.csv _sds011_sensor_123.csv _sds011_sensor_1337.csv
+Usage:  python main.py <region-name> <dir-with-sensor-data> <dir-with-sensor-data>
 
 output:
 a directory called <region-name>_merged with contents:
@@ -21,16 +21,16 @@ from merge_hourly import merge_hourly
 
 if __name__ == "__main__":
     alias = sys.argv[1]
-    suffixes = sys.argv[2:]
+    sensor_dirs = sys.argv[2:]
 
     print("Alias: {}".format(alias))
-    print("Sensors: {}".format(suffixes))
 
     merged_files = []
-    # get the files and merge them for each suffix
-    for suffix in suffixes:
-        files_dir_path = download_files(suffix)
-        merged_file_path = merge_files(suffix, files_dir_path)
+
+    # merge the files for each dir
+    for dir in sensor_dirs:
+        file_name = os.path.basename(dir)
+        merged_file_path = merge_files(file_name, dir)
 
         merged_files.append(merged_file_path)
 
@@ -48,9 +48,9 @@ if __name__ == "__main__":
         shutil.move(file_path, target_path)
 
     # cleanup all files from the sensors
-    for file in merged_files:
-        dir_to_remove = os.path.dirname(file)
-        shutil.rmtree(dir_to_remove)
+    # for file in merged_files:
+    #     dir_to_remove = os.path.dirname(file)
+    #     shutil.rmtree(dir_to_remove)
 
     # merge the merged files
     all_in_one_file_path = merge_files("all", merged_files_dir)
@@ -61,5 +61,3 @@ if __name__ == "__main__":
 
     # merge the data by hour
     merge_hourly(converted_file_path)
-
-
