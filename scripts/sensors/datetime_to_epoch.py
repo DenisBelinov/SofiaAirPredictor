@@ -3,6 +3,12 @@ Given a file path of sensor data, the script generates a new file with all the t
 Also all times are rounded to an hour.
 
 Added benefit: any excess headers are removed
+
+usage: python datetime_to_epoch.py <file-name>
+
+output: the same file but with the timestamp converted to linux epoch
+
+NOTE: The time is hardcoded on possition 5, if the data is in any different format, the script will break!
 """
 import sys
 import datetime
@@ -36,6 +42,8 @@ def convert_time_to_epoch(file_path):
                 out_file.write(line)
             except ValueError:
                 continue
+
+    return out_file_path
 
 
 if __name__ == "__main__":
