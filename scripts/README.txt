@@ -1,6 +1,3 @@
- cat $FILENAME | python datetimeToEpoch.py | cut -d ';' -f 6,7,10 |  python merge.py  > $DESTINATION
+There are HowTos for each script in their header.
 
-WHERE
-FILENAME is your data.
-DESTINATION is the fu***** destination.
-
+The script that combines them all is main.py
