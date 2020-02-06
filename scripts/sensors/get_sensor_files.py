@@ -13,7 +13,7 @@ import sys
 
 ARCHIVE_URL = "http://archive.luftdaten.info/"
 
-FIRST_SENSOR_DATE = datetime.date(2016, 1, 1)
+EARLIEST_VALID_SENSOR_DATE = datetime.date(2016, 1, 1)
 
 
 def download_files(sensor_suffix):
@@ -29,11 +29,12 @@ def download_files(sensor_suffix):
     except FileExistsError:
         pass
 
-    current_date = FIRST_SENSOR_DATE
-    today = datetime.date.today()
+    current_date = datetime.date.today()
     file_count = 0
+    failed_requests = 0
 
-    while current_date < today:
+    print("Start downloading files for {}".format(sensor_suffix))
+    while current_date > EARLIEST_VALID_SENSOR_DATE:
         file_name = str(current_date) + sensor_suffix
         file_path = os.path.join(output_dir, file_name)
 
@@ -45,8 +46,18 @@ def download_files(sensor_suffix):
                 output_file.write(r.text)
 
             file_count += 1
+        else:
+            failed_requests += 1
 
-        current_date = current_date + datetime.timedelta(days=1)
+        # progress log
+        if file_count % 30 == 0:
+            print("Currently on date: {}".format(current_date))
+
+        if failed_requests > 3:
+            break # there are probably no more files for previous dates
+
+
+        current_date = current_date - datetime.timedelta(days=1)
 
     print("Got {} files for sensor {}".format(file_count, sensor_suffix))
     return output_dir
