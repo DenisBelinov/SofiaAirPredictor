@@ -29,8 +29,9 @@ def trim_lines(lines):
         timestamp = split_line[5]
         p1 = split_line[6]
         p2 = split_line[9]
+        sensort_id = split_line[0]
 
-        new_lines.append([timestamp, p1, p2])
+        new_lines.append([timestamp, p1, p2, sensort_id])
 
     return new_lines
 
@@ -62,9 +63,10 @@ def merge_hourly(file_path):
                 print("I've found a strange entry on: {}, skipping it.".format(currentEpoch))
                 print("Datetime: {}".format(datetime.datetime.fromtimestamp(currentEpoch)))
                 print("p1={}, p2={}".format(p1, p2))
+                print("sensor_id={}".format(data[3]))
                 continue
 
-            if (epoch != currentEpoch and epoch != 0):
+            if epoch != currentEpoch and epoch != 0:
                 p1Sum /= count
                 p2Sum /= count
 
