@@ -7,3 +7,13 @@ Mladost:
    - 8279
    - 28864
    - 34801
+Manastirski_livadi:
+  coordinates: 42.6602, 23.2820
+  sensor-ids:
+   - 3091
+   - 4466
+   - 7641
+   - 19545
+   - 19758
+   - 28764
+   - 32826
