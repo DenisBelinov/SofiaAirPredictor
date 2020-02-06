@@ -57,7 +57,7 @@ def merge_hourly(file_path):
                 continue
 
             # TODO: remove this when we find the cause of faulty data
-            if p1 > 600 or p2 > 600:
+            if p1 > 1000 or p2 > 1000:
                 print("I've found a strange entry on: {}, skipping it.".format(currentEpoch))
                 continue
 
