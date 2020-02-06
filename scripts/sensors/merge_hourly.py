@@ -8,6 +8,7 @@ usage: python merge_hourly.py <file-path>
 
 output: a file with the data merged
 """
+import datetime
 import sys
 
 
@@ -59,6 +60,7 @@ def merge_hourly(file_path):
             # TODO: remove this when we find the cause of faulty data
             if p1 > 1000 or p2 > 1000:
                 print("I've found a strange entry on: {}, skipping it.".format(currentEpoch))
+                print("Datetime: {}".format(datetime.datetime.fromtimestamp(currentEpoch)))
                 print("p1={}, p2={}".format(p1, p2))
                 continue
 
