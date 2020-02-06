@@ -13,7 +13,6 @@ import os
 import sys
 import shutil
 
-from get_sensor_files import download_files
 from datetime_to_epoch import convert_time_to_epoch
 from file_merger import merge_files
 from merge_hourly import merge_hourly
