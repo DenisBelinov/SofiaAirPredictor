@@ -58,8 +58,8 @@ def merge_hourly(file_path):
             except ValueError:
                 continue
 
-            # TODO: remove this when we find the cause of faulty data
-            if p1 > 1000 or p2 > 1000:
+            # remove any data that is invalid
+            if p1 > 500 or p2 > 500:
                 print("I've found a strange entry on: {}, skipping it.".format(currentEpoch))
                 print("Datetime: {}".format(datetime.datetime.fromtimestamp(currentEpoch)))
                 print("p1={}, p2={}".format(p1, p2))
