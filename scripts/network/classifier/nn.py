@@ -5,10 +5,11 @@ import torch.optim as optim
 
 from random import shuffle
 
-DATA_PATH = "/Users/belinovd/Personal/AI/SofiaAirPredictor/data/final/mladostFinal"
-#DATA_PATH = "/Users/belinovd/Personal/AI/SofiaAirPredictor/data/final/ALL"
+DATA_PATH = "/Users/belinovd/Personal/AI/SofiaAirPredictor/data/final/mladostFinal-normalized"
 COLUMNS = {"temperature": 1, "windSpeed": 2, "humidity": 4, "precipIntensity": 5, "p1": 7}
-UPPER_BOUNDS = {"green": 25, "yellow": 50, "orange": 75, "red": 100, "purple": 500}
+#COLUMNS = {"temperature": 1, "windSpeed": 2, "p1": 7}
+UPPER_BOUNDS_UNNORMALIZED = {"green": 25, "yellow": 50, "orange": 75, "red": 100, "purple": 500}
+UPPER_BOUNDS = {"green": 0.05, "yellow": 0.1, "orange": 0.15, "red": 0.2, "purple": 1}
 
 FEATURES_COUNT = 4
 CLASSES_COUNT = 5
@@ -17,13 +18,17 @@ CLASSES_COUNT = 5
 class Net(nn.Module):
     def __init__(self):
         super().__init__()
-        self.fc1 = nn.Linear(FEATURES_COUNT, FEATURES_COUNT)
+        self.fc1 = nn.Linear(FEATURES_COUNT, 2 * FEATURES_COUNT)
+        self.fc2 = nn.Linear(2 * FEATURES_COUNT, 2 * FEATURES_COUNT)
+        # self.fc3 = nn.Linear(FEATURES_COUNT, FEATURES_COUNT)
 
-        self.fc2 = nn.Linear(FEATURES_COUNT, CLASSES_COUNT)
+        self.fc4 = nn.Linear(2 * FEATURES_COUNT, CLASSES_COUNT)
 
     def forward(self, x):
         x = F.relu(self.fc1(x))
-        x = self.fc2(x)
+        x = F.relu(self.fc2(x))
+        # x = F.relu(self.fc3(x))
+        x = self.fc4(x)
 
         return F.log_softmax(x, dim=1)
 
@@ -70,8 +75,52 @@ def get_data():
     return result
 
 
+def fix_mladost_data(dataset):
+    green = []
+    yellow = []
+    orange = []
+    red = []
+    purple = []
+
+    for data in dataset:
+        if data[1] == 0:
+            green.append(data)
+        elif data[1] == 1:
+            yellow.append(data)
+        elif data[1] == 2:
+            orange.append(data)
+        elif data[1] == 3:
+            red.append(data)
+        else:
+            purple.append(data)
+
+    yellow_mult = 4
+    orange_mult = 17
+    red_mult = 34
+    purple_mult = 17
+
+
+    new_dataset = green
+
+    for i in range(yellow_mult):
+        new_dataset = new_dataset + yellow
+
+    for i in range(orange_mult):
+        new_dataset = new_dataset + orange
+
+    for i in range(red_mult):
+        new_dataset = new_dataset + red
+
+    for i in range(purple_mult):
+        new_dataset = new_dataset + purple
+
+    return new_dataset
+
 if __name__ == "__main__":
     dataset = get_data()
+    dataset = fix_mladost_data(dataset)
+
+
     shuffle(dataset)
 
     dataset_size = len(dataset)
@@ -79,11 +128,10 @@ if __name__ == "__main__":
     trainset = dataset[int(dataset_size/5):]
 
     net = Net()
-    x = torch.tensor([0.1, 13.2, 0.3, 0.4])
 
-    optimizer = optim.Adam(net.parameters(), lr=0.001)
+    optimizer = optim.Adam(net.parameters(), lr=0.0001)
 
-    EPOCHS = 30
+    EPOCHS = 200
     BATCH_SIZE = 32
 
     for epoch in range(EPOCHS):
@@ -142,11 +190,11 @@ if __name__ == "__main__":
     print("correct guesses:", correct_guesses)
     print("wrong_guesses:", wrong_guesses)
 
-    # this is used for data analysis if needed
-    # counts = {"green": 0, "yellow": 0, "orange": 0, "red": 0, "purple": 0}
-    #
-    # for data in dataset:
-    #     counts[data[1]] += 1
-    #
-    # print(counts)
+    #this is used for data analysis if needed
+    ###counts = {"green": 0, "yellow": 0, "orange": 0, "red": 0, "purple": 0}
+    counts = {0: 0, 1: 0, 2: 0, 3: 0, 4: 0}
 
+    for data in dataset:
+        counts[data[1]] += 1
+
+    print(counts)
