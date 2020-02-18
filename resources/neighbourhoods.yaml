@@ -1,5 +1,6 @@
 Mladost:
  coordinates: 42.649655,23.378155
+ entry-counts: {0: 18692, 1: 3578, 2: 961, 3: 445, 4: 815}
  sensor-ids:
    - 1102
    - 3967
@@ -9,6 +10,7 @@ Mladost:
    - 34801
 Manastirski_livadi:
   coordinates: 42.6602, 23.2820
+  entry-counts: {0: 926, 1: 209, 2: 52, 3: 22, 4: 72}
   sensor-ids:
     - 3091
     - 4466
@@ -19,6 +21,7 @@ Manastirski_livadi:
     - 32826
 NDK:
   coordinates: 42.6891, 23.3187
+  entry-counts: {0: 8850, 1: 1582, 2: 430, 3: 180, 4: 599}
   sensor-ids:
     - 2261
     - 4620

@@ -4,6 +4,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 
 from random import shuffle
+import time
 
 DATA_PATH = "/Users/belinovd/Personal/AI/SofiaAirPredictor/data/final/mladostFinal-normalized"
 COLUMNS = {"temperature": 1, "windSpeed": 2, "humidity": 4, "precipIntensity": 5, "p1": 7}
@@ -18,11 +19,11 @@ CLASSES_COUNT = 5
 class Net(nn.Module):
     def __init__(self):
         super().__init__()
-        self.fc1 = nn.Linear(FEATURES_COUNT, 2 * FEATURES_COUNT)
-        self.fc2 = nn.Linear(2 * FEATURES_COUNT, 2 * FEATURES_COUNT)
+        self.fc1 = nn.Linear(FEATURES_COUNT, 32 * FEATURES_COUNT)
+        self.fc2 = nn.Linear(32 * FEATURES_COUNT, 16 * FEATURES_COUNT)
         # self.fc3 = nn.Linear(FEATURES_COUNT, FEATURES_COUNT)
 
-        self.fc4 = nn.Linear(2 * FEATURES_COUNT, CLASSES_COUNT)
+        self.fc4 = nn.Linear(16 * FEATURES_COUNT, CLASSES_COUNT)
 
     def forward(self, x):
         x = F.relu(self.fc1(x))
@@ -131,8 +132,8 @@ if __name__ == "__main__":
 
     optimizer = optim.Adam(net.parameters(), lr=0.0001)
 
-    EPOCHS = 200
-    BATCH_SIZE = 32
+    EPOCHS = 500
+    BATCH_SIZE = 64
 
     for epoch in range(EPOCHS):
         shuffle(trainset)
@@ -150,7 +151,7 @@ if __name__ == "__main__":
             loss.backward()
             optimizer.step()
 
-        print(loss)
+        print(epoch, " , ", loss)
 
 
 
@@ -198,3 +199,6 @@ if __name__ == "__main__":
         counts[data[1]] += 1
 
     print(counts)
+
+    PATH = './nn_{}.pth'.format(time.time())
+    torch.save(net.state_dict(), PATH)
